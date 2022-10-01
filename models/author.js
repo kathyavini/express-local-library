@@ -23,6 +23,14 @@ AuthorSchema.virtual('name').get(function () {
   return fullname;
 });
 
+// Vitual for formatted lifespan dates
+AuthorSchema.virtual('formatted_date_of_birth').get(function () {
+  return this.date_of_birth ? this.date_of_birth.getFullYear() : '';
+});
+AuthorSchema.virtual('formatted_date_of_death').get(function () {
+  return this.date_of_death ? this.date_of_death.getFullYear() : '';
+});
+
 // Virtual for author's URL
 AuthorSchema.virtual('url').get(function () {
   // We don't use an arrow function as we'll need the this object
