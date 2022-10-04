@@ -72,7 +72,7 @@ exports.bookinstance_create_post = [
   // Process request after validation and sanitization
   (req, res, next) => {
     // Extract the validation errors from a request.
-    const errors = validationResults(req);
+    const errors = validationResult(req);
 
     // Create a BookInstance object with escaped and trimmed data
     const bookinstance = new BookInstance({
@@ -112,13 +112,48 @@ exports.bookinstance_create_post = [
 ];
 
 // Display BookInstance delete form on GET.
-exports.bookinstance_delete_get = (req, res) => {
-  res.send('NOT IMPLEMENTED: BookInstance delete GET');
+exports.bookinstance_delete_get = (req, res, next) => {
+  BookInstance.findById(req.params.id)
+    .populate('book')
+    .exec((err, bookinstance) => {
+      if (err) {
+        return next(err);
+      }
+      if (bookinstance == null) {
+        // No results
+        res.redirect('/catalog/bookinstances');
+      }
+
+      // Successful, so render.
+      res.render('bookinstance_delete', {
+        title: 'Delete Copy',
+        bookinstance,
+      });
+    });
 };
 
 // Handle BookInstance delete on POST.
-exports.bookinstance_delete_post = (req, res) => {
-  res.send('NOT IMPLEMENTED: BookInstance delete POST');
+exports.bookinstance_delete_post = (req, res, next) => {
+  BookInstance.findById(req.params.id)
+    .populate('book')
+    .exec((err, bookinstance) => {
+      if (err) {
+        return next(err);
+      }
+      if (bookinstance == null) {
+        // No results
+        res.redirect('/catalog/bookinstances');
+      }
+
+      // Successful, so delete object and redirect to the list of book instances for that book
+      BookInstance.findByIdAndRemove(req.body.bookinstanceid, (err) => {
+        if (err) {
+          return next(err);
+        }
+        // Success - go to the copies list for that book
+        res.redirect(bookinstance.book.url);
+      });
+    });
 };
 
 // Display BookInstance update form on GET.
