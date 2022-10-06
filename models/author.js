@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { DateTime } = require('luxon');
 
 const Schema = mongoose.Schema;
 
@@ -23,12 +24,21 @@ AuthorSchema.virtual('name').get(function () {
   return fullname;
 });
 
-// Vitual for formatted lifespan dates
+// Vituals for lifespan dates formatted for display (year only)
 AuthorSchema.virtual('formatted_date_of_birth').get(function () {
   return this.date_of_birth ? this.date_of_birth.getFullYear() : '';
 });
 AuthorSchema.virtual('formatted_date_of_death').get(function () {
   return this.date_of_death ? this.date_of_death.getFullYear() : '';
+});
+
+// Virtuals for lifespan dates formatted for form input (date picker format)
+AuthorSchema.virtual('date_of_birth_picker_formatted').get(function () {
+  return DateTime.fromJSDate(this.date_of_birth).toLocaleString();
+});
+
+AuthorSchema.virtual('date_of_death_picker_formatted').get(function () {
+  return DateTime.fromJSDate(this.date_of_death).toLocaleString();
 });
 
 // Virtual for author's URL

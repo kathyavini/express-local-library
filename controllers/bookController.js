@@ -354,7 +354,7 @@ exports.book_update_post = [
     });
 
     if (!errors.isEmpty()) {
-      // There are errors. Render form again with sanitized values/erros messages
+      // There are errors. Render form again with sanitized values/error messages
 
       // Get all authors and genres for form
       async.parallel(
@@ -395,7 +395,7 @@ exports.book_update_post = [
         return next(err);
       }
 
-      // Successful to book detail page.
+      // Successful so redirect to book detail page.
       res.redirect(thebook.url);
     });
   },
